@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#define BLACK_PIECE_COLOR "\033[34m" // blu
+#define WHITE_PIECE_COLOR "\033[97m" // bianco brillante
 
 using namespace std;
 
@@ -85,17 +87,43 @@ bool reSottoAttacco() {
     return false;
 }
 
-void stampaScacchiera() {
-    for (int riga = 0; riga < 8; riga++) {
+void stampaScacchiera()
+{
+    for (int riga = 0; riga < 8; riga++)
+    {
         cout << 8 - riga << "|";
-        for (int colonna = 0; colonna < 8; colonna++) {
-            if ((riga + colonna) % 2 == 0) cout << "\033[48;5;180m";
-            else cout << "\033[48;5;94m";
-            cout << " " << scacchiera[riga][colonna] << "  ";
+
+        for (int colonna = 0; colonna < 8; colonna++)
+        {
+            string pezzo = scacchiera[riga][colonna];
+            bool casellaChiara = ((riga + colonna) % 2 == 0);
+
+            // Colori caselle: marrone chiaro / marrone scuro
+            string codiceSfondo = casellaChiara ? "\033[48;5;180m" : "\033[48;5;94m";
+
+            string codiceColoreTesto;
+
+            // Pezzi neri
+            string pezziNeri = "♜♞♝♛♚♟";
+
+            if (pezziNeri.find(pezzo) != string::npos) {
+                codiceColoreTesto = BLACK_PIECE_COLOR; // blu
+            }
+            else if (pezzo != " ") {
+                codiceColoreTesto = WHITE_PIECE_COLOR; // sempre bianco
+            }
+            else {
+                // Casella vuota: testo invisibile
+                codiceColoreTesto = WHITE_PIECE_COLOR;
+            }
+
+            cout << codiceSfondo << codiceColoreTesto << " " << pezzo << "  " << "\033[0m";
         }
-        cout << "\033[0m\n";
+
+        cout << endl;
     }
-    cout << "   a   b   c   d   e   f   g   h\n";
+
+    cout << "   A   B   C   D   E   F   G   H\n";
 }
 
 void promozionePedone(int colonna, int riga) {
